@@ -11,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -36,19 +38,20 @@ public class JournalController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @GetMapping("/{username}/id/{id}")
-    public ResponseEntity<JournalEntries> getJournalEntryById(@PathVariable String username,
+    @GetMapping("/id/{id}")
+    public ResponseEntity<JournalEntries> getJournalEntryById(
             @PathVariable ObjectId id) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
         User user = userServices.getUserByUsername(username);
-        if (user == null) {
-            return ResponseEntity.notFound().build();
-        }
-        // if (user.getJournals().contains(id)) {
+        List <JournalEntries> collect = user.getJournals().stream().filter(x-> x.getId().equals(id)).collect(Collectors.toList());
 
-        JournalEntries entry = journalServices.findById(id);
-        if (entry != null)
-            return new ResponseEntity<>(entry, HttpStatus.OK);
-        // }
+        if (!collect.isEmpty()) {
+            JournalEntries journalEntry = journalServices.findById(id);
+            if (journalEntry != null) {
+                return new ResponseEntity<>(journalEntry, HttpStatus.OK);
+            }
+        }
         return ResponseEntity.notFound().build();
     }
 
