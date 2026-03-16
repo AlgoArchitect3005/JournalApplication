@@ -32,7 +32,10 @@ public class JournalService {
     }
 
     // create new journal entry
-    // @Transactional annotation ensures that the entire method is executed within a transaction. If any exception occurs during the execution of the method, the transaction will be rolled back, ensuring data integrity and consistency in the database.
+    // 'Transactional' annotation ensures that the entire method is executed within
+    // a transaction. If any exception occurs during the execution of the method,
+    // the transaction will be rolled back, ensuring data integrity and consistency
+    // in the database.
     // @Transactional
     public void createEntry(JournalEntries entry, String username) {
         try {
@@ -59,10 +62,20 @@ public class JournalService {
     }
 
     // delete journal entry
-    public void deleteEntry(ObjectId id, String username) {
-        User user = userServices.getUserByUsername(username);
-        user.getJournals().removeIf(journal -> journal.getId().equals(id));
-        userServices.saveUser(user);
-        journalRepository.deleteById(id);
+    //@Transactional
+    public boolean deleteEntry(ObjectId id, String username) {
+        boolean removed = false;
+        try{
+            User user = userServices.getUserByUsername(username);
+             removed = user.getJournals().removeIf(journal -> journal.getId().equals(id));
+            if (removed) {
+                userServices.saveUser(user);
+                journalRepository.deleteById(id);
+            }
+            return removed;
+        }catch(Exception e){
+            System.out.println(e);
+            throw new RuntimeException("Failed to delete journal entry: " + e.getMessage());
+        }
     }
 }

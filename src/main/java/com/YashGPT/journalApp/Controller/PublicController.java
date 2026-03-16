@@ -21,7 +21,7 @@ public class PublicController {
        // This method can be used to create a new user without authentication
          @RequestBody User user) {
       try {
-         userService.saveUser(user);
+         userService.saveNewUser(user);
          // return new ResponseEntity<>(HttpStatus.CREATED);
       } catch (Exception e) {
          // return ResponseEntity.badRequest().body(e.getMessage());

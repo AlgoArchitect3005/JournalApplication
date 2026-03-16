@@ -35,7 +35,7 @@ public class JournalController {
             return new ResponseEntity<>(all, HttpStatus.OK);
 
         }
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>("No journal entries found for the user.", HttpStatus.NO_CONTENT);
     }
 
     @GetMapping("/id/{id}")
@@ -84,9 +84,14 @@ public class JournalController {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @DeleteMapping("/id/{username}/{id}")
-    public ResponseEntity<?> deleteJournalEntry(@PathVariable String username, @PathVariable ObjectId id) {
-        journalServices.deleteEntry(id, username);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
+    @DeleteMapping("/id/{id}")
+    public ResponseEntity<?> deleteJournalEntry( @PathVariable ObjectId id) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+       boolean removed = journalServices.deleteEntry(id, username);
+         if(removed){
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }                                                                                                                                                                                                                                                                                                                                                                                                                                                      
 }

@@ -22,14 +22,14 @@ private UserRepository userRepo ;
 private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
 //Add service method to create a new user
-   public void saveUser(User user) {
+   public void saveNewUser(User user) {
       user.setPassword(passwordEncoder.encode(user.getPassword()));
       user.setRoles(Arrays.asList("USER"));
       userRepo.save(user);
       
  }
 
-  public void saveNewUser(User user) {
+  public void saveUser(User user) {
       userRepo.save(user);
       //   user.setJournals(new ArrayList<>()); // force set journals to empty list to avoid null pointer exceptions
   }
