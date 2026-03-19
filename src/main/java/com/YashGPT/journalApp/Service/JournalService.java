@@ -4,6 +4,7 @@ import com.YashGPT.journalApp.Entity.JournalEntries;
 import com.YashGPT.journalApp.Entity.User;
 import com.YashGPT.journalApp.Repository.JournalRepository;
 import org.bson.types.ObjectId;
+import java.util.Optional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -27,8 +28,8 @@ public class JournalService {
     }
 
     // get journal entry by id
-    public JournalEntries findById(ObjectId id) {
-        return journalRepository.findById(id).orElse(null);
+    public Optional<JournalEntries> findById(ObjectId id) {
+        return journalRepository.findById(id);
     }
 
     // create new journal entry
@@ -47,8 +48,8 @@ public class JournalService {
         } catch (Exception e) {
             System.out.println(e);
             throw new RuntimeException("Failed to create journal entry: " + e.getMessage()); // Rethrow the exception to
-                                                                                             // trigger transaction
-                                                                                             // rollback
+             // trigger transaction
+             // rollback
         }
 
     }

@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.security.core.Authentication;
@@ -44,12 +45,13 @@ public class JournalController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
         User user = userServices.getUserByUsername(username);
-        List <JournalEntries> collect = user.getJournals().stream().filter(x-> x.getId().equals(id)).collect(Collectors.toList());
+        List<JournalEntries> collect = user.getJournals().stream().filter(x -> x.getId().equals(id))
+                .collect(Collectors.toList());
 
         if (!collect.isEmpty()) {
-            JournalEntries journalEntry = journalServices.findById(id);
-            if (journalEntry != null) {
-                return new ResponseEntity<>(journalEntry, HttpStatus.OK);
+           Optional<JournalEntries> journalEntry = journalServices.findById(id);
+            if (journalEntry.isPresent()) {
+                return new ResponseEntity<>(journalEntry.get(), HttpStatus.OK);
             }
         }
         return ResponseEntity.notFound().build();
@@ -67,31 +69,39 @@ public class JournalController {
         }
     }
 
-    @PutMapping("/{username}/id/{id}")
+    @PutMapping("/id/{id}")
     public ResponseEntity<?> updateJournalEntry(
-            @PathVariable String username,
             @PathVariable ObjectId id,
             @RequestBody JournalEntries entry) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
 
-        JournalEntries old = journalServices.findById(id);
-        if (old != null) {
-            old.setTitle(entry.getTitle() != null && !entry.getTitle().equals(" ") ? entry.getTitle() : old.getTitle());
-            old.setContent(entry.getContent() != null && !entry.getContent().equals(" ") ? entry.getContent()
-                    : old.getContent());
-            journalServices.updateEntry(id, old);
-            return new ResponseEntity<>(old, HttpStatus.OK);
+         User user = userServices.getUserByUsername(username);
+        List<JournalEntries> collect = user.getJournals().stream().filter(x -> x.getId().equals(id))
+                .collect(Collectors.toList());
+
+        if (!collect.isEmpty()) {
+           Optional<JournalEntries> journalEntry = journalServices.findById(id);
+            if (journalEntry.isPresent()) {
+                JournalEntries old = journalEntry.get();
+                old.setTitle(entry.getTitle() != null && !entry.getTitle().equals(" ") ? entry.getTitle() : old.getTitle());
+                old.setContent(entry.getContent() != null && !entry.getContent().equals(" ") ? entry.getContent()
+                        : old.getContent());
+                journalServices.updateEntry(id, old);
+                return new ResponseEntity<>(old, HttpStatus.OK);
+            }
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
-
+  
     @DeleteMapping("/id/{id}")
-    public ResponseEntity<?> deleteJournalEntry( @PathVariable ObjectId id) {
+    public ResponseEntity<?> deleteJournalEntry(@PathVariable ObjectId id) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
-       boolean removed = journalServices.deleteEntry(id, username);
-         if(removed){
+        boolean removed = journalServices.deleteEntry(id, username);
+        if (removed) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }                                                                                                                                                                                                                                                                                                                                                                                                                                                      
+    }
 }

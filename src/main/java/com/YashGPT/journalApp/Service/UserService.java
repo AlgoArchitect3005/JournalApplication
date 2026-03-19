@@ -53,4 +53,11 @@ public Optional<User> findById(ObjectId id){
  public void deleteById(ObjectId id){
    userRepo.deleteById(id);
  }
+
+//To create admin user
+public void createAdmin(User user) {
+   user.setPassword(passwordEncoder.encode(user.getPassword()));
+   user.setRoles(Arrays.asList("ROLE_ADMIN"));
+   userRepo.save(user);
 } 
+}
