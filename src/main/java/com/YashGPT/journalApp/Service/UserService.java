@@ -24,7 +24,7 @@ private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 //Add service method to create a new user
    public void saveNewUser(User user) {
       user.setPassword(passwordEncoder.encode(user.getPassword()));
-      user.setRoles(Arrays.asList("USER"));
+      user.setRoles(Arrays.asList("ROLE_USER"));
       userRepo.save(user);
       
  }
