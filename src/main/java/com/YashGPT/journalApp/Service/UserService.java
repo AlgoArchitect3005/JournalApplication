@@ -50,8 +50,8 @@ public Optional<User> findById(ObjectId id){
  }
 
  //To delete user
- public void deleteById(ObjectId id){
-   userRepo.deleteById(id);
+ public void deleteByUsername(String username){
+   userRepo.deleteByUsername(username);
  }
 
 //To create admin user
