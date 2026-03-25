@@ -3,7 +3,6 @@ package com.YashGPT.journalApp.Controller;
 import com.YashGPT.journalApp.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.YashGPT.journalApp.Entity.User;
-import com.YashGPT.journalApp.Repository.UserRepository;
 
 import java.util.List;
 
@@ -23,8 +22,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
    @Autowired
    private UserService userServ;
-   @Autowired
-   private UserRepository userRepo;
 
    // Add endpoint to get all users
    @GetMapping("/all")
@@ -64,7 +61,7 @@ public class UserController {
 public ResponseEntity<?> deleteUser(){
    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
    String username = authentication.getName();
-   userRepo.deleteByUsername(username);
+   userServ.deleteByUsername(username);
    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 }
 }
