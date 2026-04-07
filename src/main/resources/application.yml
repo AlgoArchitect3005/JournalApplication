@@ -6,3 +6,8 @@ spring:
 server:
   servlet:
     context-path: /journalApp
+
+    
+# logging:
+#   level:
+#     root: ERROR
