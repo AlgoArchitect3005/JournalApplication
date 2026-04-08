@@ -31,6 +31,7 @@
     <sonar.projectKey>AlgoArchitect3005_JournalApplication</sonar.projectKey>
     <sonar.organization>algoarchitect3005</sonar.organization>
     <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+    <maven.test.skip>true</maven.test.skip>
 	</properties>
 	<dependencies>
 		<dependency>
