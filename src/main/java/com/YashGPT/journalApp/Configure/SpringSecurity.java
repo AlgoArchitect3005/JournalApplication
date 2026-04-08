@@ -8,6 +8,9 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import static org.springframework.security.config.Customizer.withDefaults;
+
+import javax.naming.AuthenticationException;
+
 import com.YashGPT.journalApp.Service.UserDetailsServiceImpl;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +40,7 @@ public class SpringSecurity {
     }
 
     // Configure authentication manager to use the custom UserDetailsService and password encoder. Encodes passwords using BCryptPasswordEncoder for secure authentication.
-    protected void configure(org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder auth) throws Exception {
+    protected void configure(org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder auth) throws AuthenticationException {
         auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
     }
 
