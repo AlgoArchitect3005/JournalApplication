@@ -64,4 +64,12 @@ public ResponseEntity<HttpStatus> deleteUser(){
    userServ.deleteByUsername(username);
    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 }
+
+//
+@GetMapping("/greet")
+public ResponseEntity<String> greetUser(){
+   Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+   String username = authentication.getName();
+   return ResponseEntity.ok("Hello, " + username + "! Welcome to your journal.");
+}
 }
